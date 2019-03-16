@@ -1,10 +1,16 @@
 import * as R from "ramda";
 
+import { createSelector } from "reselect";
 import { store } from "../index";
 
 const nameLens = R.lensProp("name");
 const ageLens = R.lensProp("age");
+
 class User {
+  static of(value) {
+    return new User(value);
+  }
+
   static actionTypes = {
     CHANGE_NAME: "CHANGE_NAME",
     CHANGE_AGE: "CHANGE_AGE"
@@ -21,10 +27,6 @@ class User {
   }
   get combine() {
     return `${this.value.name} - ${this.value.age}`;
-  }
-
-  of(value) {
-    return new User(value);
   }
 
   setName(name) {
@@ -46,4 +48,7 @@ class User {
   };
 }
 
-export default User;
+export default createSelector(
+  R.prop("UserSelector"),
+  User.of
+);

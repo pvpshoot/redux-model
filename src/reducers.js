@@ -3,7 +3,8 @@ import * as R from "ramda";
 import UserModel from "./models/UserModel";
 import { combineReducers } from "redux";
 
-const initialState = new UserModel({ name: "mike", age: 30 });
+const user = { name: "mike", age: 30 };
+const initialState = new UserModel(user);
 
 const userReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -18,4 +19,23 @@ const userReducer = (state = initialState, action) => {
   }
 };
 
-export default combineReducers({ User: userReducer });
+const nameLens = R.lensProp("name");
+const ageLens = R.lensProp("age");
+
+const userSelectorReducer = (state = user, action) => {
+  switch (action.type) {
+    case UserModel.actionTypes.CHANGE_NAME: {
+      return R.set(nameLens, action.name, state);
+    }
+    case UserModel.actionTypes.CHANGE_AGE: {
+      return R.set(ageLens, action.age, state);
+    }
+    default:
+      return state;
+  }
+};
+
+export default combineReducers({
+  User: userReducer,
+  UserSelector: userSelectorReducer
+});
